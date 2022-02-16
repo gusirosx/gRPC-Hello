@@ -4,14 +4,18 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/gin-gonic/examples/grpc/pb"
+	pb "gRPC-gin/proto"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
 // server is used to implement helloworld.GreeterServer.
-type server struct{}
+type server struct {
+	// Embed the unimplemented server
+	pb.UnimplementedGreeterServer
+}
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
