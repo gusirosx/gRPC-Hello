@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	pb "github.com/gin-gonic/examples/grpc/pb"
+	"github.com/gin-gonic/gin"
 	"google.golang.org/grpc"
 )
 
@@ -21,7 +21,7 @@ func main() {
 
 	// Set up a http server.
 	r := gin.Default()
-	r.GET("/rest/n/:name", func(c *gin.Context) {
+	r.GET("/:name", func(c *gin.Context) {
 		name := c.Param("name")
 
 		// Contact the server and print out its response.
