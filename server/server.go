@@ -4,14 +4,18 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/gin-gonic/examples/grpc/pb"
+	pb "gRPC-gin/proto"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
 // server is used to implement helloworld.GreeterServer.
-type server struct{}
+type server struct {
+	// Embed the unimplemented server
+	pb.UnimplementedGreeterServer
+}
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
@@ -21,14 +25,14 @@ func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloRe
 func main() {
 	lis, err := net.Listen("tcp", ":50051")
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.Fatalf("failed to listen on port 50051: %v", err)
 	}
-	s := grpc.NewServer()
-	pb.RegisterGreeterServer(s, &server{})
-
+	srv := grpc.NewServer()
+	pb.RegisterGreeterServer(srv, &server{})
+	log.Printf("server listening at %v", lis.Addr())
 	// Register reflection service on gRPC server.
-	reflection.Register(s)
-	if err := s.Serve(lis); err != nil {
+	reflection.Register(srv)
+	if err := srv.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
 }
