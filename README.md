@@ -19,3 +19,10 @@ $ make run_client
 ```sh
 $ 'http://localhost:8080/name/gusirosx'
 ```
+
+## How to create proto files
+
+1. use the makefile
+
+```sh
+$ make generate
