@@ -5,17 +5,17 @@
 1. run grpc server
 
 ```sh
-$ go run grpc/server.go
+$ make run_server
 ```
 
-2. run gin server
+2. run gin client
 
 ```sh
-$ go run gin/main.go
+$ make run_client
 ```
 
-3. use curl command to test it
+3. use browser to test it
 
 ```sh
-$ curl -v 'http://localhost:8052/rest/n/gusirosx'
+$ 'http://localhost:8080/name/gusirosx'
 ```
