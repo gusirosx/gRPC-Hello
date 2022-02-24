@@ -11,8 +11,9 @@ import (
 )
 
 var (
-	serverAddr   = flag.String("server", "localhost:50050", "Server address (host:port)")
-	serverHost   = flag.String("server-host", "localhost", "Host name to which server IP should resolve")
+	portHello    = flag.String("server hello port", ":50050", "Server address (port)")
+	portBye      = flag.String("server bye port", ":50040", "Server address (port)")
+	server       = flag.String("server-host", "localhost", "Host name to which server IP should resolve")
 	insecureFlag = flag.Bool("insecure", true, "Skip SSL validation? [false]")
 	skipVerify   = flag.Bool("skip-verify", false, "Skip server hostname verification in SSL validation [false]")
 )
@@ -23,13 +24,12 @@ func init() {
 
 // Connection creates a new gRPC connection to the server.
 // host should be of the form domain:port, e.g., example.com:443
-func Connection() (*grpc.ClientConn, error) {
+func Connection(host, port *string) (*grpc.ClientConn, error) {
 	var opts []grpc.DialOption
-	if *serverAddr == "" {
-		log.Fatal("-server is empty")
-	}
-	if *serverHost != "" {
-		opts = append(opts, grpc.WithAuthority(*serverHost))
+	if *host != "" {
+		opts = append(opts, grpc.WithAuthority(*host))
+	} else {
+		log.Fatal("Server address is empty")
 	}
 	if *insecureFlag {
 		opts = append(opts, grpc.WithTransportCredentials(insecure.NewCredentials()))
@@ -39,5 +39,6 @@ func Connection() (*grpc.ClientConn, error) {
 		})
 		opts = append(opts, grpc.WithTransportCredentials(cred))
 	}
-	return grpc.Dial(*serverAddr, opts...)
+
+	return grpc.Dial(*host+*port, opts...)
 }
